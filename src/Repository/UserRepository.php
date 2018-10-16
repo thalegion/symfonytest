@@ -21,7 +21,7 @@ class UserRepository extends ServiceEntityRepository
 
     public function findWithoutDogs()
     {
-        $dogsQuery = $this->getEntityManager()->createQueryBuilder()
+        /*$dogsQuery = $this->getEntityManager()->createQueryBuilder()
             ->select('d')
             ->from('App\Entity\Dog', 'd')
             ->andWhere('d.user = u.id');
@@ -34,7 +34,13 @@ class UserRepository extends ServiceEntityRepository
         )
             ->getQuery();
 
-        return $usersQuery->getResult();
+        return $usersQuery->getResult();*/
+
+        return $this->createQueryBuilder('u')
+            ->leftJoin('u.dogs', 'd')
+            ->andWhere('d.id IS NULL')
+            ->getQuery()
+            ->getResult();
 
     }
 

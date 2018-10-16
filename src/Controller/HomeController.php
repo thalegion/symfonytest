@@ -18,23 +18,27 @@ class HomeController extends AbstractController
         /*
          * 229ms-267ms / 2mb-4mb
          */
-        $usersRepository = $this->getDoctrine()->getRepository(User::class);
-        $users = $usersRepository->findWithoutDogs();
+        #$usersRepository = $this->getDoctrine()->getRepository(User::class);
+        #$users = $usersRepository->findWithoutDogs();
 
 
         /*
          * 162ms / 2mb
          */
-        /*$rsm = new ResultSetMapping;
+        $rsm = new ResultSetMapping;
         $rsm->addEntityResult('App\Entity\User', 'u');
         $rsm->addFieldResult('u', 'id', 'id');
         $rsm->addFieldResult('u', 'name', 'name');
 
-        $query = $this->getDoctrine()->getManager()->createNativeQuery('SELECT u.id, u.name 
+        /*$query = $this->getDoctrine()->getManager()->createNativeQuery('SELECT u.id, u.name
         FROM users u 
-        WHERE NOT EXISTS (SELECT d.id FROM dogs d WHERE d.user_id = u.id)', $rsm);
+        WHERE NOT EXISTS (SELECT d.id FROM dogs d WHERE d.user_id = u.id)', $rsm);*/
+        $query = $this->getDoctrine()->getManager()->createNativeQuery('SELECT u.id, u.name
+        FROM users u 
+        LEFT JOIN dogs d ON d.user_id = u.id
+        WHERE d.id IS NULL', $rsm);
 
-        $users = $query->getResult();*/
+        $users = $query->getResult();
 
         return $this->render('home.html.twig', [
             'users' => $users
